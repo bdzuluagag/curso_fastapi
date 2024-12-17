@@ -1,11 +1,16 @@
 from pydantic import BaseModel
 
-class CustumerModel(BaseModel):
-    id: int
+class CustomerModel(BaseModel):
     name: str
     description: str | None
     email: str
     age: int
+
+class Customer(CustomerModel):
+    id: int | None = None
+
+class CustomerCreate(CustomerModel):
+    pass
 
 class Transaction(BaseModel):
     id: int
@@ -14,7 +19,7 @@ class Transaction(BaseModel):
 
 class Invoice(BaseModel):
     id: int
-    customer: CustumerModel
+    customer: CustomerModel
     transactions: list[Transaction]
     total: int
 
