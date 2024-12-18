@@ -1,4 +1,3 @@
-from sqlite3 import IntegrityError
 from db import SessionDep
 from fastapi import HTTPException, APIRouter, Query, status
 from sqlmodel import select
