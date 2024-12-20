@@ -10,14 +10,14 @@ app.include_router(invoices.router)
 app.include_router(plans.router)
 
 
-@app.middleware("http")
+"""@app.middleware("http")
 async def log_request_headers(request: Request, call_next):
     print("Request Headers:")
     for header, value in request.headers.items():
         print(f"{header}: {value}")
 
     response = await call_next(request)
-    return response
+    return response"""
 
 
 @app.get("/")

@@ -1,5 +1,5 @@
 
-from sqlmodel import Session, select
+from sqlmodel import select
 from fastapi import HTTPException, status
 from domain.models import Transaction, TransactionCreate, Customer
 from infrastructure.db import SessionDep
@@ -16,5 +16,5 @@ def create_transaction(transaction_data: TransactionCreate, session: SessionDep)
     session.refresh(transaction)
     return transaction
 
-def get_transactions(session: Session) -> list[Transaction]:
+def get_transactions(session: SessionDep) -> list[Transaction]:
     return session.exec(select(Transaction)).all()
