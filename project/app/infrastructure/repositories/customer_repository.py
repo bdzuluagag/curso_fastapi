@@ -1,18 +1,23 @@
-from domain.models import Customer, CustomerCreate, CustomerPlan, CustomerUpdate, CustomerPlan, EnumState, Plan
-from sqlmodel import select
-from infrastructure.db import SessionDep
+from domain.models import Customer, CustomerPlan, CustomerPlan, EnumState
+from sqlmodel import select, Session
 
 class CustomerRepository:
 
-    def __init__(self, session: SessionDep):
+    def __init__(self, session: Session):
         self.session = session
 
+
     def get_customer_by_email_repository(self, email: str) -> Customer:
-        customer = self.session.exec(select(Customer).where(Customer.email == email)).first()
+        return self.session.exec(select(Customer).where(Customer.email == email)).first()
+    
+
+    def create_customer_repository(self, customer_data: dict) -> Customer:
+        customer = Customer.model_validate(customer_data)
         self.session.add(customer)
         self.session.commit()
         self.session.refresh(customer)
         return customer
+
     
     def get_customer_repository(self, customer_id: int) -> Customer:
         return self.session.get(Customer, customer_id)
@@ -23,7 +28,7 @@ class CustomerRepository:
         self.session.commit()
 
     
-    def update_customer_repository(self, customer: Customer, customer_data: CustomerUpdate) -> Customer:
+    def update_customer_repository(self, customer: Customer, customer_data: dict) -> Customer:
         customer.sqlmodel_update(customer_data)
         self.session.add(customer)
         self.session.commit()

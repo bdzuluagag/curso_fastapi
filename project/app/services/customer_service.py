@@ -1,75 +1,68 @@
-from sqlmodel import select
-from fastapi import HTTPException, status, Query
-from domain.models import Customer, CustomerCreate, CustomerPlan, CustomerUpdate, EnumState, Plan
+from domain.models import CustomerCreate, CustomerUpdate, EnumState, Plan
+from infrastructure.repositories.customer_repository import CustomerRepository
+from domain.dto import Response
 from infrastructure.db import SessionDep
 
 
-def create_customer_service(customer_data: CustomerCreate, session: SessionDep) -> Customer:
-    existing_customer = session.exec(select(Customer).where(Customer.email == customer_data.email)).first()
+def create_customer_service(customer_data: CustomerCreate, repository: CustomerRepository) -> Response:
+    existing_customer = repository.get_customer_by_email_repository(customer_data.email)
     if existing_customer:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
-    
-    customer = Customer.model_validate(customer_data.model_dump())
-    session.add(customer)
-    session.commit()
-    session.refresh(customer)
-    return customer
+        return Response(success=False, message="Email already registered", data=None)
+
+    customer = repository.create_customer_repository(customer_data.model_dump())
+    return Response(success=True, message="Customer created", data=customer)
 
 
-def get_customer_service(customer_id: int, session: SessionDep) -> Customer:
-    customer = session.get(Customer, customer_id)
+def get_customer_service(customer_id: int, repository: CustomerRepository) -> Response:
+    customer = repository.get_customer_repository(customer_id)
     if not customer:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")
+        return Response(success=False, message="Customer doesn't exist", data=None)
     
-    return customer
+    return Response(success=True, message="Customer retrieved", data=customer)
 
 
-def delete_customer_service(customer_id: int, session: SessionDep):
-    customer = session.get(Customer, customer_id)
-
+def delete_customer_service(customer_id: int, repository: CustomerRepository) -> Response:
+    customer = repository.get_customer_repository(customer_id)
     if not customer:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")
+        return Response(success=False, message="Customer doesn't exist", data=None)
     
-    session.delete(customer)
-    session.commit()
-    return {"detail": "ok"}
+    repository.delete_customer_service(customer)
+    return Response(success=True, message="Customer deleted", data=None)
 
 
-def update_customer_service(customer_id: int, customer_data: CustomerUpdate, session: SessionDep) -> Customer:
-    customer = session.get(Customer, customer_id)
+def update_customer_service(customer_id: int, customer_data: CustomerUpdate, repository: CustomerRepository) -> Response:
+    customer = repository.get_customer_repository(customer_id)
     if not customer:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")
+        return Response(success=False, message="Customer doesn't exist", data=None)
     
     customer_dict = customer_data.model_dump(exclude_unset=True)
-    customer.sqlmodel_update(customer_dict)
-    session.add(customer)
-    session.commit()
-    session.refresh(customer)
-    return customer
+    repository.update_customer_repository(customer, customer_dict)
+    return Response(success=True, message="Customer updated", data=None)
 
 
-def get_all_customers_service(session: SessionDep) -> list[Customer]:
-    return session.exec(select(Customer)).all()
+def get_all_customers_service(repository: CustomerRepository) -> Response:
+    customers = repository.get_all_customers_repository()
+    if not customers:
+        return Response(success=False, message="No customers found", data=None)
+    
+    return Response(success=True, message="Customers retrieved", data=customers)
 
 
-def suscribe_to_plan_service(customer_id: int, plan_id: int, session: SessionDep, state: EnumState = Query()) -> CustomerPlan:
-    customer = session.get(Customer, customer_id)
-    plan = session.get(Plan, plan_id)
+def suscribe_to_plan_service(customer_id: int, plan_id: int, repository: CustomerRepository, state: EnumState) -> Response:
+    customer = repository.get_customer_repository(customer_id)
+    plan = SessionDep.get(Plan, plan_id)
     if not customer or not plan:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer or Plan doesn't exist")
+        return Response(success=False, message="Customer or Plan doesn't exist", data=None)
     
-    customer_plan = CustomerPlan(customer_id=customer.id, plan_id=plan.id, state=state)
-    session.add(customer_plan)
-    session.commit()
-    session.refresh(customer_plan)
-    return customer_plan
+    customer_plan = repository.suscribe_to_plan_repository(customer.id, plan.id, state)
+    return Response(success=True, message="Customer suscribed to plan", data=customer_plan)
 
 
-def get_customer_plans_service(customer_id: int, session: SessionDep) -> list[Plan]:
-    customer = session.get(Customer, customer_id)
+def get_customer_plans_service(customer_id: int, repository: CustomerRepository) -> Response:
+    customer = repository.get_customer_repository(customer_id)
     if not customer:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")
+        return Response(success=False, message="Customer doesn't exist", data=None)
     
-    return customer.plans
+    return Response(success=True, message="Customer plans retrieved", data=customer.plans)
 
 
