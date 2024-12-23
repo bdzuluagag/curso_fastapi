@@ -3,8 +3,7 @@ from infrastructure.repositories.plan_repository import PlanRepository
 from domain.models import Customer, CustomerCreate, CustomerUpdate, CustomerPlan, EnumState, Plan
 from infrastructure.db import SessionDep
 from infrastructure.repositories.customer_repository import CustomerRepository
-from services.customer_service import create_customer_service, get_all_customers_service, get_customer_service, get_customer_plans_service, update_customer_service, delete_customer_service, suscribe_to_plan_service
-
+from services.customer_service import create_customer_service, get_all_customers_service, get_customer_service, get_customer_plans_service, update_customer_service, delete_customer_service, suscribe_to_plan_service, desuscribe_to_plan_service
 
 router = APIRouter(tags=['customers'])
 
@@ -41,8 +40,8 @@ async def delete_customer_endpoint(customer_id: int, session: SessionDep):
 
 @router.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED)
 async def update_customer_endpoint(customer_id: int, customer_data: CustomerUpdate, session: SessionDep):
-    repositoy = CustomerRepository(session)
-    response = update_customer_service(customer_id, customer_data, repositoy)
+    repository = CustomerRepository(session)
+    response = update_customer_service(customer_id, customer_data, repository)
     if not response.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
     
@@ -59,16 +58,27 @@ async def getall_customer_endpoint(session: SessionDep):
     return response.data
 
 
-@router.post("/customers/{customer_id}/plans/{plan_id}", response_model=CustomerPlan)
-async def suscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: SessionDep, state: EnumState = Query()):
+@router.post("/customers/{customer_id}/plans/{plan_id}/suscribe", response_model=CustomerPlan)
+async def suscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: SessionDep):
     customer_repository = CustomerRepository(session)
     plan_repository = PlanRepository(session)
-    response = suscribe_to_plan_service(customer_id, plan_id, customer_repository, plan_repository, state)
+    response = suscribe_to_plan_service(customer_id, plan_id, customer_repository, plan_repository)
     if not response.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
     
     return response.data
 
+
+@router.post("/customers/{customer_id}/plans/{plan_id}/desuscribe", response_model=CustomerPlan)
+async def desuscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: SessionDep):
+    customer_repository = CustomerRepository(session)
+    plan_repository = PlanRepository(session)
+    response = desuscribe_to_plan_service(customer_id, plan_id, customer_repository, plan_repository)
+    if not response.success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
+    
+    return response.data
+    
 
 @router.get("/customers/{customer_id}/plans", response_model=list[Plan])
 async def get_customer_plans_endpoint(customer_id: int, session: SessionDep):

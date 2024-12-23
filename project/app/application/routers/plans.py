@@ -21,6 +21,19 @@ async def get_plans_endpoint(session: SessionDep):
     return response.data
 
 
+@router.get("/plan", response_model=Plan)
+async def get_plan_endpoint(plan_id: int, session: SessionDep):
+    response = get_plans_service(plan_id, session)
+    if not response.success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
+    
+    return response.data
+
+
 @router.get("/plans/state", response_model=list[CustomerPlan])
 async def get_state_plans_endpoint(session: SessionDep, state: EnumState = Query()):
-    return get_state_plans_service(session, state=state)
+    response = get_state_plans_service(session, state=state)
+    if not response.success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
+    
+    return response.data

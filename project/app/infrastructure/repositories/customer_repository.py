@@ -29,7 +29,8 @@ class CustomerRepository:
 
     
     def update_customer_repository(self, customer: Customer, customer_data: dict) -> Customer:
-        customer.sqlmodel_update(customer_data)
+        for key, value in customer_data.items():
+            setattr(customer, key, value)
         self.session.add(customer)
         self.session.commit()
         self.session.refresh(customer)
@@ -40,14 +41,28 @@ class CustomerRepository:
         return self.session.exec(select(Customer)).all()
         
 
-    def suscribe_to_plan_repository(self, customer_id: int, plan_id: int, state: EnumState) -> CustomerPlan:
-        customer_plan = CustomerPlan(customer_id=customer_id, plan_id=plan_id, state=state)
+    def suscribe_to_plan_repository(self, customer_id: int, plan_id: int) -> CustomerPlan:
+        customer_plan = CustomerPlan(customer_id=customer_id, plan_id=plan_id, state="active")
         self.session.add(customer_plan)
         self.session.commit()
         self.session.refresh(customer_plan)
         return customer_plan
     
 
-    
+    def desuscribe_to_plan_repository(self, customer_id: int, plan_id: int) -> CustomerPlan:
+        customer_plan = self.session.exec(select(CustomerPlan).where(CustomerPlan.customer_id == customer_id, CustomerPlan.plan_id == plan_id)).first()
+        if customer_plan:
+            customer_plan.state = "inactive"
+            self.session.add(customer_plan)
+            self.session.commit()
+            self.session.refresh(customer_plan)
+        return customer_plan
 
-    
+    def is_already_subscribed(self, customer_id: int, plan_id: int) -> bool:
+        customer_plan = self.session.exec(select(CustomerPlan).where(CustomerPlan.customer_id == customer_id, CustomerPlan.plan_id == plan_id, CustomerPlan.state == "active")).first()
+        print(customer_plan)
+        if customer_plan:
+            return True
+        return False
+
+

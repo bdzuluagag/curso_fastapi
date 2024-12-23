@@ -18,6 +18,15 @@ def get_plans_service(session: PlanRepository) -> Response:
     return Response(success=True, message="Plans retrieved", data=plans)
 
 
+def get_plan_service(plan_id: int, session: PlanRepository) -> Response:
+    repository = PlanRepository(session)
+    plan = repository.get_plan_repository(plan_id)
+    if not plan:
+        return Response(success=False, message="Plan not found", data=None)
+    
+    return Response(success=True, message="Plan retrieved", data=plan)
+
+
 def get_state_plans_service(session: PlanRepository, state: EnumState) -> Response:
     repository = PlanRepository(session)
     plans = repository.get_state_plans_repository(state)

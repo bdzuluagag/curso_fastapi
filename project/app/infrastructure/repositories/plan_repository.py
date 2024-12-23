@@ -21,6 +21,10 @@ class PlanRepository:
         return self.session.exec(select(Plan)).all()
     
 
+    def get_plan_repository(self, plan_id: int) -> Plan:
+        return self.session.get(Plan, plan_id)
+    
+
     def get_state_plans_repository(self, state: EnumState) -> list[CustomerPlan]:
         return self.session.exec(select(CustomerPlan).where(CustomerPlan.state == state)).all()
         
