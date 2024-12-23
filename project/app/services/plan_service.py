@@ -1,11 +1,11 @@
-from fastapi import Response
 from infrastructure.repositories.plan_repository import PlanRepository
 from domain.models import EnumState, Plan, PlanCreate
+from domain.dto import Response
 
 
 def create_plan_service(plan_data: PlanCreate, session: PlanRepository) -> Response:
     repository = PlanRepository(session)
-    plan = repository.create_plans_repository(plan_data.model_dump(), repository)
+    plan = repository.create_plans_repository(plan_data.model_dump())
     return Response(success=True, message="Plan created", data=plan)
     
 

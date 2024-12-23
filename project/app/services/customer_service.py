@@ -1,7 +1,7 @@
+from infrastructure.repositories.plan_repository import PlanRepository
 from domain.models import CustomerCreate, CustomerUpdate, EnumState, Plan
 from infrastructure.repositories.customer_repository import CustomerRepository
 from domain.dto import Response
-from infrastructure.db import SessionDep
 
 
 def create_customer_service(customer_data: CustomerCreate, repository: CustomerRepository) -> Response:
@@ -48,13 +48,13 @@ def get_all_customers_service(repository: CustomerRepository) -> Response:
     return Response(success=True, message="Customers retrieved", data=customers)
 
 
-def suscribe_to_plan_service(customer_id: int, plan_id: int, repository: CustomerRepository, state: EnumState) -> Response:
-    customer = repository.get_customer_repository(customer_id)
-    plan = SessionDep.get(Plan, plan_id)
+def suscribe_to_plan_service(customer_id: int, plan_id: int, customer_repository: CustomerRepository, plan_repository: PlanRepository, state: EnumState) -> Response:
+    customer = customer_repository.get_customer_repository(customer_id)
+    plan = plan_repository.get_plans_repository(plan_id)
     if not customer or not plan:
         return Response(success=False, message="Customer or Plan doesn't exist", data=None)
     
-    customer_plan = repository.suscribe_to_plan_repository(customer.id, plan.id, state)
+    customer_plan = customer_repository.suscribe_to_plan_repository(customer.id, plan.id, state)
     return Response(success=True, message="Customer suscribed to plan", data=customer_plan)
 
 
