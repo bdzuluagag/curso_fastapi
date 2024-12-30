@@ -75,3 +75,24 @@ class Invoice(BaseModel):
     @property
     def ammount_total(self):
         return sum(transaction.ammount for transaction in self.transactions)
+    
+
+class User(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    username: str
+    password: str
+    email: EmailStr
+    disable: bool | None = None
+
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+
+
+class UserUpdate(BaseModel):
+    username: str | None = None
+    password: str | None = None
+    email: EmailStr | None = None
+    disable: bool | None = None

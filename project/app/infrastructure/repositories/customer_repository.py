@@ -1,4 +1,4 @@
-from domain.models import Customer, CustomerPlan, CustomerPlan, EnumState
+from domain.models import Customer, CustomerPlan, CustomerPlan
 from sqlmodel import select, Session
 
 class CustomerRepository:
@@ -8,7 +8,9 @@ class CustomerRepository:
 
 
     def get_customer_by_email_repository(self, email: str) -> Customer:
-        return self.session.exec(select(Customer).where(Customer.email == email)).first()
+        statement = select(Customer).where(Customer.email == email)
+        result = self.session.exec(statement).first()
+        return result
     
 
     def create_customer_repository(self, customer_data: dict) -> Customer:
@@ -49,7 +51,7 @@ class CustomerRepository:
         return customer_plan
     
 
-    def desuscribe_to_plan_repository(self, customer_id: int, plan_id: int) -> CustomerPlan:
+    def unsuscribe_to_plan_repository(self, customer_id: int, plan_id: int) -> CustomerPlan:
         customer_plan = self.session.exec(select(CustomerPlan).where(CustomerPlan.customer_id == customer_id, CustomerPlan.plan_id == plan_id)).first()
         if customer_plan:
             customer_plan.state = "inactive"
