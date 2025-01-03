@@ -37,4 +37,8 @@ class UserRepository:
         return self.session.exec(select(User)).all()
 
     def get_user_by_email(self, email: str) -> User:
-        return self.session.exec(select(User).where(User.email == email)).first()
+        statement = select(User).where(User.email == email)
+        print("bieeeeeeeeeeeeeeeeeeeeeeeeen")
+        result = self.session.exec(statement).first()
+        print("bieeeeeeeeeeeeeeeeeeeeeeeeen")
+        return result

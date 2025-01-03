@@ -4,6 +4,15 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum
 
 
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(SQLModel):
+    username: str | None = None
+
+
 class EnumState(str, Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
@@ -77,22 +86,20 @@ class Invoice(BaseModel):
         return sum(transaction.ammount for transaction in self.transactions)
     
 
-class User(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    username: str
-    password: str
-    email: EmailStr
-    disable: bool | None = None
-
-
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    email: EmailStr
-
-
-class UserUpdate(BaseModel):
-    username: str | None = None
+class UserModel(SQLModel):
+    username: str = Field(default=None)
     password: str | None = None
-    email: EmailStr | None = None
-    disable: bool | None = None
+    email: EmailStr = Field(default=None, unique=True)
+    disable: bool = Field(default=None)
+
+
+class User(UserModel, table=True):
+    id: int = Field(default=None ,primary_key=True)
+
+
+class UserCreate(UserModel):
+    pass
+
+
+class UserUpdate(UserModel):
+    pass
