@@ -61,10 +61,10 @@ class CustomerService:
             return Response(success=False, message="Customer or Plan doesn't exist", data=None)
         
         # Check if already subscribed
-        if self.customer_repository.is_already_subscribed(customer_id, plan_id):
+        if self.repository.is_already_subscribed(customer_id, plan_id):
             return Response(success=False, message="Customer already subscribed to this plan", data=None)
         
-        customer_plan = self.customer_repository.suscribe_to_plan_repository(customer.id, plan.id)
+        customer_plan = self.repository.suscribe_to_plan_repository(customer.id, plan.id)
         return Response(success=True, message="Customer subscribed to plan", data=customer_plan)
 
 
@@ -74,7 +74,7 @@ class CustomerService:
         if not customer or not plan:
             return Response(success=False, message="Customer or Plan doesn't exist", data=None)
         
-        if not self.customer_repository.is_already_subscribed(customer_id, plan_id):
+        if not self.repository.is_already_subscribed(customer_id, plan_id):
             return Response(success=False, message="Customer wasn't suscribed", data=None)
         
         customer_plan = self.repository.unsuscribe_to_plan_repository(customer.id, plan.id)

@@ -66,8 +66,8 @@ async def getall_customer_endpoint(session: SessionDep):
 async def suscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: SessionDep):
     customer_repository = CustomerRepository(session)
     plan_repository = PlanRepository(session)
-    service = CustomerService()
-    response = service.suscribe_to_plan_service(customer_id, plan_id, customer_repository, plan_repository)
+    service = CustomerService(customer_repository)
+    response = service.suscribe_to_plan_service(customer_id, plan_id, plan_repository)
     if not response.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
     
@@ -78,8 +78,8 @@ async def suscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: Ses
 async def unsuscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: SessionDep):
     customer_repository = CustomerRepository(session)
     plan_repository = PlanRepository(session)
-    service = CustomerService()
-    response = service.unsuscribe_to_plan_service(customer_id, plan_id, customer_repository, plan_repository)
+    service = CustomerService(customer_repository)
+    response = service.unsuscribe_to_plan_service(customer_id, plan_id, plan_repository)
     if not response.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
     
@@ -89,8 +89,8 @@ async def unsuscribe_to_plan_endpoint(customer_id: int, plan_id: int, session: S
 @router.get("/customers/{customer_id}/plans", response_model=list[Plan])
 async def get_customer_plans_endpoint(customer_id: int, session: SessionDep):
     repository = CustomerRepository(session)
-    service = CustomerService()
-    response = service.get_customer_plans_service(customer_id, repository)
+    service = CustomerService(repository)
+    response = service.get_customer_plans_service(customer_id)
     if not response.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
     
