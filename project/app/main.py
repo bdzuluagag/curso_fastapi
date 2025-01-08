@@ -1,7 +1,9 @@
-
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from infrastructure.db import create_all_Tables
 from application.routers import customers, transactions, invoices, plans, users
+
+load_dotenv()
 
 app = FastAPI(lifespan=create_all_Tables)
 app.include_router(customers.router)
@@ -24,3 +26,8 @@ async def log_request_headers(request: Request, call_next):
 @app.get("/")
 async def root():
     return {"message": "Holaa"}
+
+
+@app.get("/hello/{name}")
+async def hello(name: str):
+    return f"Hello {name}"

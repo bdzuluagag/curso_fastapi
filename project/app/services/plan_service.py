@@ -35,3 +35,12 @@ def get_state_plans_service(session: PlanRepository, state: EnumState) -> Respon
     
     return Response(success=True, message="Plans retrieved", data=plans)
     
+
+def delete_plan_service(plan_id: int, session: PlanRepository) -> Response:
+    repository = PlanRepository(session)
+    plan = repository.get_plan_repository(plan_id)
+    if not plan:
+        return Response(success=False, message="Plan not found", data=None)
+    
+    repository.delete_plan_repository(plan)
+    return Response(success=True, message="Plan deleted", data=None)

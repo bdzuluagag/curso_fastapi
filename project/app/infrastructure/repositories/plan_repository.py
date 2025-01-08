@@ -28,3 +28,7 @@ class PlanRepository:
     def get_state_plans_repository(self, state: EnumState) -> list[CustomerPlan]:
         return self.session.exec(select(CustomerPlan).where(CustomerPlan.state == state)).all()
         
+
+    def delete_plan_repository(self, plan: Plan):
+        self.session.delete(plan)
+        self.session.commit()
