@@ -54,33 +54,6 @@ class CustomerService:
         return Response(success=True, message="Customers retrieved", data=customers)
 
 
-    def suscribe_to_plan_service(self, customer_id: int, plan_id: int, plan_repository: PlanRepository) -> Response:
-        customer = self.repository.get_customer_repository(customer_id)
-        plan = plan_repository.get_plan_repository(plan_id)
-        if not customer or not plan:
-            return Response(success=False, message="Customer or Plan doesn't exist", data=None)
-        
-        # Check if already subscribed
-        if self.repository.is_already_subscribed(customer_id, plan_id):
-            return Response(success=False, message="Customer already subscribed to this plan", data=None)
-        
-        customer_plan = self.repository.suscribe_to_plan_repository(customer.id, plan.id)
-        return Response(success=True, message="Customer subscribed to plan", data=customer_plan)
-
-
-    def unsuscribe_to_plan_service(self, customer_id: int, plan_id: int, plan_repository: PlanRepository) -> Response:
-        customer = self.repository.get_customer_repository(customer_id)
-        plan = plan_repository.get_plan_repository(plan_id)
-        if not customer or not plan:
-            return Response(success=False, message="Customer or Plan doesn't exist", data=None)
-        
-        if not self.repository.is_already_subscribed(customer_id, plan_id):
-            return Response(success=False, message="Customer wasn't suscribed", data=None)
-        
-        customer_plan = self.repository.unsuscribe_to_plan_repository(customer.id, plan.id)
-        return Response(success=True, message="Customer unsuscribed to plan", data=customer_plan)
-
-
     def get_customer_plans_service(self, customer_id: int) -> Response:
         customer = self.repository.get_customer_repository(customer_id)
         if not customer:
