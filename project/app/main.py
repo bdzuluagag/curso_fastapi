@@ -1,10 +1,13 @@
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request, Security
+from fastapi.security import HTTPBearer
 from infrastructure.db import create_all_Tables
 from application.controllers import transactions, invoices, plans, users
 from UI.routers import customer_router, subscription_router
+from application.utils import VerifyToken
 
 load_dotenv()
+auth = VerifyToken()
 
 app = FastAPI(lifespan=create_all_Tables)
 app.include_router(customer_router.router)
@@ -33,3 +36,13 @@ async def root():
 @app.get("/hello/{name}")
 async def hello(name: str):
     return f"Hello {name}"
+
+
+@app.get("/public")
+def public():
+    return {"status": "success", "message": "This is a public endpoint"}
+
+
+@app.get("/private")
+def private(auth_result: str = Security(auth.verify)):
+    return auth_result
