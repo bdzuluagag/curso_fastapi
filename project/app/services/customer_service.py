@@ -1,13 +1,13 @@
 from sqlmodel import Session
 from infrastructure.repositories.plan_repository import PlanRepository
 from domain.models import CustomerCreate, CustomerUpdate
-from infrastructure.repositories.customer_repository import CustomerRepository
 from domain.dto import Response
+from domain.interfaces.repositories.IcustomerRepository import ICustomerRepository
 
 
 class CustomerService:
 
-    def __init__(self, repository: CustomerRepository):
+    def __init__(self, repository: ICustomerRepository): 
         self.repository = repository
 
     def create_customer_service(self, customer_data: CustomerCreate) -> Response:
