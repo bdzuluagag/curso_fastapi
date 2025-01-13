@@ -1,13 +1,13 @@
-from sqlmodel import Session
 from infrastructure.repositories.plan_repository import PlanRepository
-from infrastructure.repositories.subscription_repository import SubscriptionRepository
-from infrastructure.repositories.customer_repository import CustomerRepository
+from domain.interfaces.repositories.Isubscription_repository import ISubscriptionRepository
+from domain.interfaces.repositories.Icustomer_repository import ICustomerRepository
 from domain.dto import Response
+from domain.interfaces.services.Isubscription_service import ISubscriptionService
 
 
-class SubscriptionService:
+class SubscriptionService(ISubscriptionService):
 
-    def __init__(self, repository: SubscriptionRepository, plan_repository: PlanRepository, customer_repository: CustomerRepository):
+    def __init__(self, repository: ISubscriptionRepository, plan_repository: PlanRepository, customer_repository: ICustomerRepository):
         self.repository = repository
         self.plan_repository = plan_repository
         self.customer_repository = customer_repository

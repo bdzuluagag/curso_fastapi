@@ -1,13 +1,11 @@
 from fastapi import HTTPException, status
 from domain.models import CustomerCreate, CustomerUpdate
-from infrastructure.db import SessionDep
-from infrastructure.repositories.customer_repository import CustomerRepository
-from services.customer_service import CustomerService
+from domain.interfaces.services.Icustomer_service import ICustomerService
 
 
 class CustomerController:
 
-    def __init__(self, service: CustomerService):
+    def __init__(self, service: ICustomerService):
         self.service = service
 
 

@@ -1,11 +1,11 @@
 from domain.models import Customer, CustomerPlan, CustomerPlan
-from sqlmodel import select
+from sqlmodel import Session, select
 from infrastructure.db import SessionDep
-from domain.interfaces.repositories.IcustomerRepository import ICustomerRepository
+from domain.interfaces.repositories.Icustomer_repository import ICustomerRepository
 
 class CustomerRepository(ICustomerRepository):
 
-    def __init__(self, session: SessionDep):
+    def __init__(self, session: Session):
         self.session = session
 
 

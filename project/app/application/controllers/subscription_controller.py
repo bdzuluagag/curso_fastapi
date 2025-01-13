@@ -1,10 +1,10 @@
 from fastapi import HTTPException, status
-from services.subscription_service import SubscriptionService
+from domain.interfaces.services.Isubscription_service import ISubscriptionService
 
 
 class SubscriptionController:
 
-    def __init__(self, service: SubscriptionService):
+    def __init__(self, service: ISubscriptionService):
         self.service = service
 
     def subscribe_to_plan_controller(self, customer_id: int, plan_id: int):

@@ -1,9 +1,10 @@
 from domain.models import CustomerPlan
 from sqlmodel import select
 from infrastructure.db import SessionDep
+from domain.interfaces.repositories.Isubscription_repository import ISubscriptionRepository
 
 
-class SubscriptionRepository:
+class SubscriptionRepository(ISubscriptionRepository):
 
     def __init__(self, session: SessionDep):
         self.session = session

@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from domain.models import CustomerPlan
+from fastapi import APIRouter, Depends
 from application.controllers.subscription_controller import SubscriptionController
 from infrastructure.db import SessionDep
 from infrastructure.repositories.subscription_repository import SubscriptionRepository
