@@ -1,6 +1,5 @@
-from domain.models import Customer, CustomerPlan, CustomerPlan
+from domain.models import Customer
 from sqlmodel import Session, select
-from infrastructure.db import SessionDep
 from domain.interfaces.repositories.Icustomer_repository import ICustomerRepository
 
 class CustomerRepository(ICustomerRepository):
