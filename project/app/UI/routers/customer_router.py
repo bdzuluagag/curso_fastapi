@@ -37,8 +37,3 @@ async def delete_customer_endpoint(customer_id: int, controller: CustomerControl
 @router.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED)
 async def update_customer_endpoint(customer_id: int, customer_data: CustomerUpdate, controller: CustomerController = Depends(get_customer_controller)):
     return controller.update_customer_controller(customer_id, customer_data)
-
-
-@router.get("/customers/{customer_id}/plans", response_model=list[Plan])
-async def get_customer_plans_endpoint(customer_id: int, controller: CustomerController = Depends(get_customer_controller)):
-    return controller.get_customer_plans_controller(customer_id)

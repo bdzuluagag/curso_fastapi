@@ -24,3 +24,8 @@ def subscribe_to_plan_endpoint(customer_id: int, plan_id: int, controller: Subsc
 @router.post("/customers/{customer_id}/plans/{plan_id}/unsubscribe")
 def unsubscribe_to_plan_endpoint(customer_id: int, plan_id: int, controller: SubscriptionController = Depends(get_subscription_controller)):
     return controller.unsubscribe_to_plan_controller(customer_id, plan_id)
+
+
+@router.get("/customers/{customer_id}/plans")
+async def get_customer_active_plans_endpoint(customer_id: int, controller: SubscriptionController = Depends(get_subscription_controller)):
+    return controller.get_customer_active_plans_controller(customer_id)

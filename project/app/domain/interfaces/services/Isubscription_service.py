@@ -10,3 +10,7 @@ class ISubscriptionService(ABC):
     @abstractmethod
     def unsubscribe_to_plan_service(self, customer_id: int, plan_id: int) -> Response:
         pass
+
+    @abstractmethod
+    def get_customer_active_plans_service(self, customer_id: int) -> Response:
+        pass

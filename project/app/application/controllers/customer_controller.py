@@ -47,12 +47,4 @@ class CustomerController:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
         
         return response.data
-
-
-    def get_customer_plans_controller(self, customer_id: int):
-        response = self.service.get_customer_plans_service(customer_id)
-        if not response.success:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=response.message)
-        
-        return response.data
     

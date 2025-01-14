@@ -38,6 +38,10 @@ class SubscriptionRepository(ISubscriptionRepository):
         return None
     
 
+    def get_customer_active_plans_repository(self, customer_id: int) -> list[CustomerPlan]:
+        return self.session.exec(select(CustomerPlan).where(CustomerPlan.customer_id == customer_id, CustomerPlan.state == "active")).all()
+
+
     def is_already_subscribed(self, customer_id: int, plan_id: int) -> bool:
         customer_plan = self.session.exec(select(CustomerPlan).where(CustomerPlan.customer_id == customer_id, CustomerPlan.plan_id == plan_id, CustomerPlan.state == "active")).first()
         print("already subscribed: ", customer_plan)

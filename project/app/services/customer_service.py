@@ -1,4 +1,4 @@
-from domain.models import CustomerCreate, CustomerUpdate
+from domain.models import CustomerCreate, CustomerUpdate, EnumState
 from domain.dto import Response
 from domain.interfaces.repositories.Icustomer_repository import ICustomerRepository
 from domain.interfaces.services.Icustomer_service import ICustomerService
@@ -51,16 +51,3 @@ class CustomerService(ICustomerService):
             return Response(success=False, message="No customers found", data=None)
         
         return Response(success=True, message="Customers retrieved", data=customers)
-
-
-    def get_customer_plans_service(self, customer_id: int) -> Response:
-        customer = self.repository.get_customer_repository(customer_id)
-        if not customer:
-            return Response(success=False, message="Customer doesn't exist", data=None)
-        
-        if not customer.plans:
-            return Response(success=False, message="Customer has no plans", data=None)
-        
-        return Response(success=True, message="Customer plans retrieved", data=customer.plans)
-
-
