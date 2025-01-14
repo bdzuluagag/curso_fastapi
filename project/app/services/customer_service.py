@@ -1,5 +1,3 @@
-from sqlmodel import Session
-from infrastructure.repositories.plan_repository import PlanRepository
 from domain.models import CustomerCreate, CustomerUpdate
 from domain.dto import Response
 from domain.interfaces.repositories.Icustomer_repository import ICustomerRepository

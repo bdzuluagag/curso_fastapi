@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Request, Security
+from fastapi import FastAPI, Security
 from fastapi.security import HTTPBearer
 from infrastructure.db import create_all_Tables
-from application.controllers import transactions, invoices, plans, users
-from UI.routers import customer_router, subscription_router
+from application.controllers import transactions, invoices, users
+from UI.routers import customer_router, subscription_router, plan_router
 from application.utils import VerifyToken
 
 load_dotenv()
@@ -14,7 +14,7 @@ app.include_router(customer_router.router)
 app.include_router(subscription_router.router)
 app.include_router(transactions.router)
 app.include_router(invoices.router)
-app.include_router(plans.router)
+app.include_router(plan_router.router)
 app.include_router(users.router)
 
 

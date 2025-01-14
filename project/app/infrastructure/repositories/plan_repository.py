@@ -1,9 +1,9 @@
 from sqlmodel import Session, select
 
+from domain.interfaces.repositories.Iplan_repository import IPlanRepository
 from domain.models import CustomerPlan, EnumState, Plan
 
-
-class PlanRepository:
+class PlanRepository(IPlanRepository):
 
     def __init__(self, session: Session):
         self.session = session
